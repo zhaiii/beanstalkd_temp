@@ -15,7 +15,7 @@ import java.util.Date;
  * @author dustin norlander
  *
  */
-public class BeanstalkClient {
+public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkClient {
 
 	protected Log log = LogFactory.getLog(BeanstalkClient.class);
 	
@@ -68,7 +68,8 @@ public class BeanstalkClient {
 	 * will return the connection to the pool, or close the underlying socket if this
 	 * did not come from a pool
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		if (this.pool == null) {
 			if (this.con != null) {
 				this.con.close();
@@ -97,7 +98,8 @@ public class BeanstalkClient {
 		} 
 	}
 	
-	public void useTube(String tube) throws BeanstalkException{
+	@Override
+    public void useTube(String tube) throws BeanstalkException{
 		try {			
 			this.init();
 			con.write("use " + tube + "\r\n");
@@ -115,7 +117,8 @@ public class BeanstalkClient {
 		}
 	}
 	
-	public void watchTube(String tube) throws BeanstalkException{
+	@Override
+    public void watchTube(String tube) throws BeanstalkException{
 		try {			
 			this.init();
 			con.write("watch " + tube + "\r\n");
@@ -135,7 +138,8 @@ public class BeanstalkClient {
 		}
 	}
 	
-	public void ignoreTube(String tube) throws BeanstalkException{
+	@Override
+    public void ignoreTube(String tube) throws BeanstalkException{
 		try {			
 			this.init();
 			con.write("ignore " + tube + "\r\n");
@@ -156,11 +160,13 @@ public class BeanstalkClient {
 	 * stats for the current tube
 	 * @throws BeanstalkException
 	*/ 
-	public String tubeStats() throws BeanstalkException {
+	@Override
+    public String tubeStats() throws BeanstalkException {
 		return this.tubeStats(this.tube);
 	}
 	
-	public String tubeStats(String tube) throws BeanstalkException {
+	@Override
+    public String tubeStats(String tube) throws BeanstalkException {
 		try {			
 			this.init();
 			String command = "stats-tube " + tube + "\r\n";
@@ -198,7 +204,8 @@ public class BeanstalkClient {
 	 * @throws BeanstalkException If an unexpected response is received from the server, or other unexpected
 	 * 	 problem occurs.
 	 */
-	public long put(long priority, int delay, int ttr, byte[] data) throws BeanstalkException{
+	@Override
+    public long put(long priority, int delay, int ttr, byte[] data) throws BeanstalkException{
 		try {			
 			this.init();
 			Date start = new Date();
@@ -236,11 +243,13 @@ public class BeanstalkClient {
 		}
 	}
 	
-	public void deleteJob(BeanstalkJob job) throws BeanstalkException {
+	@Override
+    public void deleteJob(BeanstalkJob job) throws BeanstalkException {
 		deleteJob(job.getId());
 	}
 	
-	public void deleteJob(long id) throws BeanstalkException {
+	@Override
+    public void deleteJob(long id) throws BeanstalkException {
 		try {			
 			this.init();
 			String command = "delete " + id + "\r\n";
@@ -268,7 +277,8 @@ public class BeanstalkClient {
 	 * @throws BeanstalkException If an unexpected response is received from the server, or other unexpected
 	 * 	 problem occurs.
 	 */
-	public BeanstalkJob reserve(Integer timeoutSeconds) throws BeanstalkException{
+	@Override
+    public BeanstalkJob reserve(Integer timeoutSeconds) throws BeanstalkException{
 		try {			
 			this.init();
 			String command = "reserve\r\n";
@@ -317,6 +327,7 @@ public class BeanstalkClient {
 		}
 	}
 
+    @Override
     public void release(long id, int priority, int delay) throws BeanstalkException {
         try {
             this.init();
@@ -349,7 +360,8 @@ public class BeanstalkClient {
 	 * @throws BeanstalkException If an unexpected response is received from the server, or other unexpected
 	 * 	 problem occurs.
 	 */
-	public void release(BeanstalkJob job, int priority, int delay) throws BeanstalkException {
+	@Override
+    public void release(BeanstalkJob job, int priority, int delay) throws BeanstalkException {
 	    release(job.getId(), priority, delay);
 	}
 
@@ -360,7 +372,8 @@ public class BeanstalkClient {
 	 * @param job The job to bury. This job must previously have been reserved.
 	 * @param priority The new priority to assign to the job.
 	 */
-	public void bury(BeanstalkJob job, int priority) throws BeanstalkException {
+	@Override
+    public void bury(BeanstalkJob job, int priority) throws BeanstalkException {
 		try {
 			this.init();
 			String command = "bury " + job.getId() + " " + priority + "\r\n";

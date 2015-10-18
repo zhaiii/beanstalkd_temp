@@ -34,9 +34,6 @@ public class Example {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-
 	}
 	
 	/**
@@ -44,7 +41,7 @@ public class Example {
 	 * @throws BeanstalkException 
 	 */
 	public static void clientExample() throws BeanstalkException {
-		BeanstalkClient client = new BeanstalkClient("localhost", 8010, "example");
+		BeanstalkClient client = new BeanstalkClient("localhost", 11300, "example");
 		log.info("Putting a job");
 		client.put(1l, 0, 5000, "this is some data".getBytes());
 		BeanstalkJob job = client.reserve(60);
