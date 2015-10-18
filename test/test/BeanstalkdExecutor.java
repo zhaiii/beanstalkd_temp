@@ -1,10 +1,9 @@
-package com.ishansong.beanstalkd;
+package test;
 
-import com.sun.media.jfxmedia.logging.Logger;
-import com.trendrr.beanstalk.BeanstalkClient;
-import com.trendrr.beanstalk.BeanstalkDisconnectedException;
-import com.trendrr.beanstalk.BeanstalkException;
-import com.trendrr.beanstalk.BeanstalkPool;
+import trendrr.beanstalk.BeanstalkClient;
+import trendrr.beanstalk.BeanstalkDisconnectedException;
+import trendrr.beanstalk.BeanstalkException;
+import trendrr.beanstalk.BeanstalkPool;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

@@ -1,7 +1,7 @@
 /**
- * 
+ *
  */
-package com.trendrr.beanstalk;
+package trendrr.beanstalk;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,48 +15,48 @@ import java.util.Date;
  * @author dustin norlander
  *
  */
-public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkClient {
+public class BeanstalkClient {
 
 	protected Log log = LogFactory.getLog(BeanstalkClient.class);
-	
+
 	protected BeanstalkConnection con;
 	private boolean inited = false;
 	boolean reap = false; //this will tell the pool to reap it when returned
-	
+
 	protected String addr;
 	protected int port;
 	protected String tube;
-	
-	
-	
+
+
+
 	/**
 	 * these variables are only used in the pool
 	 */
 	Date inUseSince = null;
 	Date lastUsed = null;
-	
+
 	BeanstalkPool pool = null;
-	
-	
+
+
 	public static void main(String...strings) throws Exception{
-		
+
 	}
-	
+
 	public BeanstalkClient(BeanstalkConnection con) {
 		this.con = con;
 		this.inited = true;
 	}
-	
+
 	public BeanstalkClient(String addr, int port) {
 		this(addr, port, null);
 	}
-	
+
 	public BeanstalkClient(String addr, int port, String tube) {
 		this.addr = addr;
 		this.port = port;
 		this.tube = tube;
 	}
-	
+
 	public BeanstalkClient(String addr, int port, String tube, BeanstalkPool pool) {
 		this.addr = addr;
 		this.port = port;
@@ -68,8 +68,7 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 	 * will return the connection to the pool, or close the underlying socket if this
 	 * did not come from a pool
 	 */
-	@Override
-    public void close() {
+	public void close() {
 		if (this.pool == null) {
 			if (this.con != null) {
 				this.con.close();
@@ -78,12 +77,12 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 		}
 		pool.done(this);
 	}
-	
+
 	private void init() throws BeanstalkException{
 		if (inited) {
 			return;
 		}
-		
+
 		try {
 			this.inited = true;
 			this.con = new BeanstalkConnection();
@@ -95,12 +94,11 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 			}
 		} catch (BeanstalkException x) {
 			throw x;
-		} 
+		}
 	}
-	
-	@Override
-    public void useTube(String tube) throws BeanstalkException{
-		try {			
+
+	public void useTube(String tube) throws BeanstalkException{
+		try {
 			this.init();
 			con.write("use " + tube + "\r\n");
 			String line = con.readControlResponse();
@@ -116,16 +114,15 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 			throw x;
 		}
 	}
-	
-	@Override
-    public void watchTube(String tube) throws BeanstalkException{
-		try {			
+
+	public void watchTube(String tube) throws BeanstalkException{
+		try {
 			this.init();
 			con.write("watch " + tube + "\r\n");
-			
+
 			String line = con.readControlResponse();
 			log.debug(line);
-			
+
 			if (line.startsWith("WATCHING")) {
 				return;
 			}
@@ -137,15 +134,14 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 			throw x;
 		}
 	}
-	
-	@Override
-    public void ignoreTube(String tube) throws BeanstalkException{
-		try {			
+
+	public void ignoreTube(String tube) throws BeanstalkException{
+		try {
 			this.init();
 			con.write("ignore " + tube + "\r\n");
 			String line = con.readControlResponse();
 			log.debug(line);
-			
+
 			if (line.startsWith("WATCHING")) {
 				return;
 			}
@@ -153,45 +149,43 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 		} catch (BeanstalkDisconnectedException x) {
 			this.reap = true; //reap that shit..
 			throw x;
-		} 
+		}
 	}
-	
+
 	/**
 	 * stats for the current tube
 	 * @throws BeanstalkException
-	*/ 
-	@Override
-    public String tubeStats() throws BeanstalkException {
+	 */
+	public String tubeStats() throws BeanstalkException {
 		return this.tubeStats(this.tube);
 	}
-	
-	@Override
-    public String tubeStats(String tube) throws BeanstalkException {
-		try {			
+
+	public String tubeStats(String tube) throws BeanstalkException {
+		try {
 			this.init();
 			String command = "stats-tube " + tube + "\r\n";
 //			log.info(command);
 			con.write(command);
-			
+
 			String line = con.readControlResponse();
-			
-			
+
+
 //			log.info(line);
-			
+
 			if (!line.startsWith("OK")) {
 				throw new BeanstalkException(line);
 			}
 			int numBytes = Integer.parseInt(line.split(" ")[1]);
 			String response = new String(con.readBytes(numBytes));
-			
-			
+
+
 			log.info(response);
-			
+
 			return response;
 		} catch (BeanstalkDisconnectedException x) {
 			this.reap = true; //reap that shit..
 			throw x;
-		} 
+		}
 	}
 	/**
 	 * Puts a task into the currently used queue (see {@link #useTube(String)}.
@@ -204,35 +198,34 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 	 * @throws BeanstalkException If an unexpected response is received from the server, or other unexpected
 	 * 	 problem occurs.
 	 */
-	@Override
-    public long put(long priority, int delay, int ttr, byte[] data) throws BeanstalkException{
-		try {			
+	public long put(long priority, int delay, int ttr, byte[] data) throws BeanstalkException{
+		try {
 			this.init();
 			Date start = new Date();
 			String command = "put " + priority + " " + delay + " " + ttr + " " + data.length + "\r\n";
 //			log.info(command);
-			
+
 			ByteArrayOutputStream buf = new ByteArrayOutputStream();
 			buf.write(command.getBytes());
 			buf.write(data);
 			buf.write("\r\n".getBytes());
-			
+
 			con.write(buf.toByteArray());
 
 //			String line = in.readLine();
 			String line = con.readControlResponse();
 //			log.info("INPUT: " + line);
-			
+
 //			log.info("READ RESPONSE IN : " + (new Date().getTime() - start.getTime()) );
-			
+
 			if (line.startsWith("INSERTED")) {
 				long id = Long.parseLong(line.replaceAll("[^0-9]", ""));
 				return id;
 			}
-			
+
 			//there was an error.
 			throw new BeanstalkException(line);
-			
+
 		} catch (BeanstalkDisconnectedException x) {
 			this.reap = true; //reap that shit..
 			throw x;
@@ -242,15 +235,13 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 			throw new BeanstalkException(x);
 		}
 	}
-	
-	@Override
-    public void deleteJob(BeanstalkJob job) throws BeanstalkException {
+
+	public void deleteJob(BeanstalkJob job) throws BeanstalkException {
 		deleteJob(job.getId());
 	}
-	
-	@Override
-    public void deleteJob(long id) throws BeanstalkException {
-		try {			
+
+	public void deleteJob(long id) throws BeanstalkException {
+		try {
 			this.init();
 			String command = "delete " + id + "\r\n";
 			log.debug(this);
@@ -258,11 +249,11 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 			con.write(command);
 			String line = con.readControlResponse();
 			log.debug(line);
-			
+
 			if (line.startsWith("DELETED")) {
-				return;	
+				return;
 			}
-			throw new BeanstalkException(line);			
+			throw new BeanstalkException(line);
 		} catch (BeanstalkDisconnectedException x) {
 			this.reap = true; //reap that shit..
 			throw x;
@@ -277,46 +268,45 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 	 * @throws BeanstalkException If an unexpected response is received from the server, or other unexpected
 	 * 	 problem occurs.
 	 */
-	@Override
-    public BeanstalkJob reserve(Integer timeoutSeconds) throws BeanstalkException{
-		try {			
+	public BeanstalkJob reserve(Integer timeoutSeconds) throws BeanstalkException{
+		try {
 			this.init();
 			String command = "reserve\r\n";
 			if (timeoutSeconds != null) {
 				command = "reserve-with-timeout " + timeoutSeconds + "\r\n";
 			}
-			
+
 			log.debug(this);
 			log.debug(command);
 			con.write(command);
 			String line = con.readControlResponse();
 			log.debug(line);
-			
+
 			if (line.startsWith("TIMED_OUT")) {
 				return null;
 			}
-			
+
 			if (!line.startsWith("RESERVED")) {
 				throw new BeanstalkException(line);
 			}
 
 			String[] tmp = line.split("\\s+");
 			long id = Long.parseLong(tmp[1]);
-			
+
 			int numBytes= Integer.parseInt(tmp[2]);
-			
+
 			log.debug("ID : " + id);
 			log.debug("numbytes: " + numBytes);
-				
+
 			byte[] bytes = con.readBytes(numBytes);
 //			log.info("GOT TASK: " + new String(bytes));
-			
+
 			BeanstalkJob job = new BeanstalkJob();
 			job.setData(bytes);
 			job.setId(id);
 			job.setClient(this);
-			return job;	
-			
+			return job;
+
 		} catch (BeanstalkDisconnectedException x) {
 			this.reap = true; //reap that shit..
 			throw x;
@@ -327,31 +317,30 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 		}
 	}
 
-    @Override
-    public void release(long id, int priority, int delay) throws BeanstalkException {
-        try {
-            this.init();
-            String command = "release " + id + " " + priority + " " + delay + "\r\n";
+	public void release(long id, int priority, int delay) throws BeanstalkException {
+		try {
+			this.init();
+			String command = "release " + id + " " + priority + " " + delay + "\r\n";
 
-            log.debug(this);
-            log.debug(command);
-            con.write(command);
-            String line = con.readControlResponse();
-            log.debug(line);
+			log.debug(this);
+			log.debug(command);
+			con.write(command);
+			String line = con.readControlResponse();
+			log.debug(line);
 
-            if (!line.startsWith("RELEASED")) {
-                throw new BeanstalkException(line);
-            }
+			if (!line.startsWith("RELEASED")) {
+				throw new BeanstalkException(line);
+			}
 
-        } catch (BeanstalkDisconnectedException x) {
-            this.reap = true; //reap that shit..
-            throw x;
-        } catch (BeanstalkException x) {
-            throw x;
-        } catch (Exception x) {
-            throw new BeanstalkException(x);
-        }        
-    }
+		} catch (BeanstalkDisconnectedException x) {
+			this.reap = true; //reap that shit..
+			throw x;
+		} catch (BeanstalkException x) {
+			throw x;
+		} catch (Exception x) {
+			throw new BeanstalkException(x);
+		}
+	}
 	/**
 	 * Releases a job (places it back onto the queue).
 	 * @param job The job to release. This job must previously have been reserved.
@@ -360,9 +349,8 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 	 * @throws BeanstalkException If an unexpected response is received from the server, or other unexpected
 	 * 	 problem occurs.
 	 */
-	@Override
-    public void release(BeanstalkJob job, int priority, int delay) throws BeanstalkException {
-	    release(job.getId(), priority, delay);
+	public void release(BeanstalkJob job, int priority, int delay) throws BeanstalkException {
+		release(job.getId(), priority, delay);
 	}
 
 	/**
@@ -372,8 +360,7 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 	 * @param job The job to bury. This job must previously have been reserved.
 	 * @param priority The new priority to assign to the job.
 	 */
-	@Override
-    public void bury(BeanstalkJob job, int priority) throws BeanstalkException {
+	public void bury(BeanstalkJob job, int priority) throws BeanstalkException {
 		try {
 			this.init();
 			String command = "bury " + job.getId() + " " + priority + "\r\n";
@@ -398,5 +385,3 @@ public class BeanstalkClient implements com.ishansong.beanstalkd.ISSBeanstalkCli
 		}
 	}
 }
-
-

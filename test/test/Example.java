@@ -1,4 +1,4 @@
-/**
+package test; /**
  * 
  */
 
@@ -6,10 +6,10 @@
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.trendrr.beanstalk.BeanstalkClient;
-import com.trendrr.beanstalk.BeanstalkException;
-import com.trendrr.beanstalk.BeanstalkJob;
-import com.trendrr.beanstalk.BeanstalkPool;
+import trendrr.beanstalk.BeanstalkClient;
+import trendrr.beanstalk.BeanstalkException;
+import trendrr.beanstalk.BeanstalkJob;
+import trendrr.beanstalk.BeanstalkPool;
 
 
 
@@ -26,7 +26,7 @@ public class Example {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//Example usage for a 
+		//test.Example usage for a
 		
 		try {
 			clientExample();
@@ -37,7 +37,7 @@ public class Example {
 	}
 	
 	/**
-	 * Example for using an unpooled client
+	 * test.Example for using an unpooled client
 	 * @throws BeanstalkException 
 	 */
 	public static void clientExample() throws BeanstalkException {

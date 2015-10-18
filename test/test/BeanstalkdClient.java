@@ -1,8 +1,8 @@
 //package com.ishansong.beanstalkd;
 //
-//import com.trendrr.beanstalk.BeanstalkClient;
-//import com.trendrr.beanstalk.BeanstalkException;
-//import com.trendrr.beanstalk.BeanstalkJob;
+//import BeanstalkClient;
+//import BeanstalkException;
+//import BeanstalkJob;
 //
 ///**
 // * Created by zhai on 15/10/14.

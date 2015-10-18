@@ -1,8 +1,8 @@
-package com.ishansong.beanstalkd;
+package test;
 
-import com.trendrr.beanstalk.BeanstalkClient;
-import com.trendrr.beanstalk.BeanstalkJob;
-import com.trendrr.beanstalk.BeanstalkPool;
+import trendrr.beanstalk.BeanstalkClient;
+import trendrr.beanstalk.BeanstalkJob;
+import trendrr.beanstalk.BeanstalkPool;
 import org.junit.Test;
 
 import java.math.BigDecimal;

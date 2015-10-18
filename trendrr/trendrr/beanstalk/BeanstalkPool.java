@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.trendrr.beanstalk;
+package trendrr.beanstalk;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -33,8 +33,8 @@ public class BeanstalkPool {
 	/**
 	 * setup a new pool.  
 	 * 
-	 * @param addr address of the beanstalkd server to connection to
-	 * @param port port of the beanstalkd server
+	 * @param addr address of the mqapi server to connection to
+	 * @param port port of the mqapi server
 	 * @param maxPoolSize maximum number of clients allowed in the pool (0 for infinity)
 	 * @param tube All operations for the client will work on the tube.
 	 */
@@ -48,8 +48,8 @@ public class BeanstalkPool {
 	/**
 	 * setup a new pool.  
 	 * 
-	 * @param addr address of the beanstalkd server to connection to
-	 * @param port port of the beanstalkd server
+	 * @param addr address of the mqapi server to connection to
+	 * @param port port of the mqapi server
 	 * @param maxPoolSize maximum number of clients allowed in the pool (0 for infinity)
 	 */
 	public BeanstalkPool(String addr, int port, int maxPoolSize) {

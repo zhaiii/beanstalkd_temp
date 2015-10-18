@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.trendrr.beanstalk;
+package trendrr.beanstalk;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
