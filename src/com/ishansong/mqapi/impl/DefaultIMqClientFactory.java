@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * the default factory impl
- * Created by KaiQiang on 2015/10/19.
+ * Created by zhai on 2015/10/19.
  */
 public class DefaultIMqClientFactory extends IMqClientFactory {
     private final static Map<String, BeanstalkPool> bkPools = new HashMap<>();

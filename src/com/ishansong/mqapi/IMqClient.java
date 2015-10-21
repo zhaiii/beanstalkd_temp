@@ -1,7 +1,7 @@
 package com.ishansong.mqapi;
 
 /**
- * mq ¿Í»§¶Ëapi
+ *
  * Created by zhai on 15/10/14.
  */
 public interface IMqClient {

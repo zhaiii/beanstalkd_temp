@@ -66,6 +66,11 @@ public class MqClientBeanStalkdImpl implements IMqClient {
         convertException(() -> this.bkc.deleteJob(convertToBeanstalkJob(job)));
     }
 
+    @Override
+    public void deleteJob(long id) throws MqException {
+        convertException(() -> this.bkc.deleteJob(id));
+    }
+
     private BeanstalkJob convertToBeanstalkJob(MqMessage job) {
         BeanstalkJob bjob = new BeanstalkJob();
         bjob.setClient(((MqClientBeanStalkdImpl)job.getCleint()).bkc);
@@ -74,14 +79,17 @@ public class MqClientBeanStalkdImpl implements IMqClient {
         return bjob;
     }
 
-    @Override
-    public void deleteJob(long id) throws MqException {
-        convertException(() -> this.bkc.deleteJob(id));
+    private MqMessage convertToMqMessage(BeanstalkJob job){
+        MqMessage message=new MqMessage();
+        message.setCleint(new MqClientBeanStalkdImpl(job.getClient()));
+        message.setData(job.getData());
+        message.setId(job.getId());
+        return message;
     }
 
     @Override
     public MqMessage reserve(Integer timeoutSeconds) throws MqException {
-        return (MqMessage)convertException(() -> this.bkc.reserve(timeoutSeconds));
+        return (MqMessage)convertException(() ->convertToMqMessage(this.bkc.reserve(timeoutSeconds)));
     }
 
     @Override
