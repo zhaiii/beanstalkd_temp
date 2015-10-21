@@ -12,8 +12,8 @@ public class MqMessage {
 	public IMqClient getCleint() {
 		return cleint;
 	}
-	public void setCleint(IMqClient cleint) {
-		this.cleint = cleint;
+	public void setCleint(IMqClient client) {
+		this.cleint = client;
 	}
 	public byte[] getData() {
 		return this.data;
