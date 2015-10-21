@@ -12,10 +12,15 @@ import trendrr.beanstalk.BeanstalkJob;
  * Created by zhai on 15/10/14.
  */
 public class MqClientBeanStalkdImpl implements IMqClient {
+    static final String DEFAULT_TUBE =  "default";
     private BeanstalkClient bkc;
 
     MqClientBeanStalkdImpl(String host, int port){
-        this.bkc = new BeanstalkClient(host, port);
+        this.bkc = new BeanstalkClient(host, port, DEFAULT_TUBE);
+    }
+
+    MqClientBeanStalkdImpl(String host, int port, String tube){
+        this.bkc = new BeanstalkClient(host, port, tube);
     }
 
     MqClientBeanStalkdImpl(BeanstalkClient bkc){
@@ -31,14 +36,24 @@ public class MqClientBeanStalkdImpl implements IMqClient {
     }
 
     @Override
-    public void useTube(String tube) throws MqException {
-        convertException(() -> this.bkc.useTube(tube));
+    public void useTube(final String tube) throws MqException {
+        convertException(new CalleeVoid() {
+            @Override
+            public void calls() throws BeanstalkException {
+                MqClientBeanStalkdImpl.this.bkc.useTube(tube);
+            }
+        });
 
     }
 
     @Override
-    public void watchTube(String tube) throws MqException {
-        convertException(() -> this.bkc.watchTube(tube));
+    public void watchTube(final String tube) throws MqException {
+        convertException(new CalleeVoid() {
+            @Override
+            public void calls() throws BeanstalkException {
+                MqClientBeanStalkdImpl.this.bkc.watchTube(tube);
+            }
+        });
     }
 
     @Override

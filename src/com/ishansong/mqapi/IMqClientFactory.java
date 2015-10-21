@@ -7,14 +7,20 @@ import com.ishansong.mqapi.impl.DefaultIMqClientFactory;
  * Created by zhai on 2015/10/18.
  */
 public abstract class IMqClientFactory {
+    private static IMqClientFactory instance;
+
     /** ????????client */
     public abstract IMqClient getMqClient(String host, int port);
+    public abstract IMqClient getMqClient(String host, int port, String tube);
     /** ???????cleint */
     public abstract IMqClient getPooledMqClient(String host, int port, int maxPoolSize) throws MqException;
+    public abstract IMqClient getPooledMqClient(String host, int port, String tube, int maxPoolSize) throws MqException;
 
     /** ?????? */
-    public final static IMqClientFactory newInstance(){
+    public synchronized final static IMqClientFactory newInstance(){
         //TODO ??????????META-INF???????????????????
-        return new DefaultIMqClientFactory();
+        if(instance == null)
+            instance = new DefaultIMqClientFactory();
+        return instance;
     }
 }

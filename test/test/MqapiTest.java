@@ -13,19 +13,23 @@ public class MqapiTest {
     @Test
     public void test() throws Exception{
 
-        IMqClient mqClient = IMqClientFactory.newInstance().getMqClient("127.0.0.1", 11300);
-        long tube = mqClient.put(2, 0, 30, "haha".getBytes());
-        System.out.println(tube);
+        IMqClient mqClient = IMqClientFactory.newInstance().getMqClient(
+                "192.168.254.129", 11300);
+        //String tube = "hello";
+        //mqClient.useTube(tube);
+        long msgid = mqClient.put(2, 0, 30, "haha".getBytes());
+        System.out.println(msgid);
 
 //        MqMessage reserve = mqClient.reserve(80);
 //        IMqClient cleint = reserve.getCleint();
 //        String s = cleint.tubeStats();
 //        System.out.println(s);
 //        cleint.watchTube("default");
-        MqMessage reserve = mqClient.reserve(23);
-        System.out.println(new String(reserve.getData()));
+        MqMessage msg = mqClient.reserve(23);
 
-        IMqClient cleint = reserve.getCleint();
+        System.out.println(new String(msg.getData()));
+
+        IMqClient cleint = msg.getCleint();
         String s = cleint.tubeStats();
         System.out.println(s);
 //        String s1 = mqClient.tubeStats();

@@ -3,6 +3,7 @@ package com.ishansong.mqapi.impl;
 import com.ishansong.mqapi.IMqClient;
 import com.ishansong.mqapi.IMqClientFactory;
 import com.ishansong.mqapi.MqException;
+import trendrr.beanstalk.BeanstalkClient;
 import trendrr.beanstalk.BeanstalkException;
 import trendrr.beanstalk.BeanstalkPool;
 
@@ -21,8 +22,16 @@ public class DefaultIMqClientFactory extends IMqClientFactory {
         return new MqClientBeanStalkdImpl(host, port);
     }
 
+    public IMqClient getMqClient(String host, int port, String tube) {
+        return new MqClientBeanStalkdImpl(host, port, tube);
+    }
+
     @Override
     public IMqClient getPooledMqClient(String host, int port, int maxPoolSize) throws MqException {
+        return getPooledMqClient(host, port, null, maxPoolSize);
+    }
+        @Override
+    public IMqClient getPooledMqClient(String host, int port, String tube, int maxPoolSize) throws MqException {
         String key = host + ':' + port;
         BeanstalkPool pool = bkPools.get(key);
         if (pool == null) {
@@ -35,7 +44,11 @@ public class DefaultIMqClientFactory extends IMqClientFactory {
             }
         }
         try {
-            return new MqClientBeanStalkdImpl(pool.getClient());
+            BeanstalkClient bkc = pool.getClient();
+            if(tube == null)
+                tube = MqClientBeanStalkdImpl.DEFAULT_TUBE;
+            bkc.useTube(tube);
+            return new MqClientBeanStalkdImpl(bkc);
         } catch (BeanstalkException e) {
             throw new MqException(e);
         }
